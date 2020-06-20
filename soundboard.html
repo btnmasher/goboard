@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Goboard</title>
+	<style type="text/css" media="screen">
+	   button {
+	       border-radius: 10px;
+	       border: 3px solid black;
+	       display: inline-block;
+	       cursor: pointer;
+	       padding: 3px 5px;
+	       margin: 5px;
+           height: 50px;
+	   }
+	   .button-container {
+            width: auto;
+            overflow-y: auto;
+            vertical-align: center;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        html {
+            background: gray;
+        }
+	   
+	   h1 {
+	       color: white;
+           text-align: center;
+           font-family: 'Arial Narrow', sans-serif;
+	   }
+	</style>
+	
+	
+</head>
+<body>
+    <h1>Goboard</h1>
+    <div id="buttons" class="button-container">
+        <!-- JS here to prevent 'flash' of all the default audio players -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+            <script type="text/javascript" charset="utf-8">
+                $(function() {
+                    $("audio").removeAttr("controls").each(function(i, audioElement) {
+                        var audio = $(this);
+                        var that = this; //closure to keep reference to current audio tag
+                        $("#buttons").append($('<button style='+audio.attr("cstyle")+'>'+audio.attr("title")+'</button>').click(function() {
+                            that.play();
+                        }));
+                    });
+                    $("audio").on("play", function() {
+                        $("audio").not(this).each(function(index, audio) {
+                            audio.pause();
+                            audio.currentTime = 0;
+                        });
+                    });
+                });
+            </script>
+            <button id="stopall">STOP ALL</button>
+            <script type="text/javascript" charset="utf-8">
+            $("#stopall").click(function() {
+                $.each($('audio'), function () {
+                    this.pause();
+                    this.currentTime = 0;
+                });
+            });
+            </script>
+            {{ range . }}
+            <audio src="{{ .File }}" controls autobuffer="true" title="{{ .Name }}" cstyle="background:{{ .Color }}"></audio> 
+            {{ end }}
+        
+    </div>
+    
+</body>
+</html>
